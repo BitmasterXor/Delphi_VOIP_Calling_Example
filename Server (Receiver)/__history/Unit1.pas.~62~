@@ -1,0 +1,198 @@
+unit Unit1;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants,
+  System.Classes, Vcl.Graphics, Vcl.Controls, Vcl.Forms, Vcl.Dialogs,
+  unaVC_wave, unaVCIDE, unaVC_socks, Vcl.StdCtrls, unaSockets, unaVC_pipe,
+  unaVCIDEutils;
+
+type
+  TForm1 = class(TForm)
+    GroupBox2: TGroupBox;
+    ipServer: TunavclIPInStream; // Server component for incoming IP streams
+    codecOut: TunavclWaveCodecDevice; // Codec for audio processing
+    waveOut: TunavclWaveOutDevice; // Output device for audio playback
+    Button2: TButton; // Button to start server
+    Button3: TButton; // Button to stop server
+    Memo1: TMemo; // Memo for logging server events
+    Label3: TLabel; // Label for call status
+    Label1: TLabel; // Label for server settings
+    ComboBox1: TComboBox; // Dropdown for selecting output device
+    RadioButton1: TRadioButton; // Radio button to select TCP protocol
+    RadioButton2: TRadioButton; // Radio button to select UDP protocol
+    GroupBox1: TGroupBox; // GroupBox for server settings
+    Button1: TButton; // Button to send message
+    Edit1: TEdit; // Input field for sending text messages
+    Memo2: TMemo; // Memo for displaying chat messages
+    procedure Button2Click(Sender: TObject); // Start server
+    procedure Button3Click(Sender: TObject); // Stop server
+    procedure FormCreate(Sender: TObject); // Initialize form
+    procedure ipServerServerNewClient(Sender: TObject; connId: tConID;
+      connected: bool); // Handle new client connection
+    procedure ipServerServerClientDisconnect(Sender: TObject; connId: tConID;
+      connected: bool); // Handle client disconnection
+    procedure ComboBox1Change(Sender: TObject); // Output device selection change
+    procedure FormClose(Sender: TObject; var Action: TCloseAction); // Handle form close event
+    procedure Button1Click(Sender: TObject); // Send message to client
+    procedure ipServerTextData(Sender: TObject; connId: tConID;
+      const data: string); // Handle incoming text data
+  private
+    procedure StartServer; // Starts the server
+    procedure StopServer; // Stops the server
+  public
+    RemoteIP: string; // IP address of the connected client
+    RemotePort: string; // Port of the connected client
+  end;
+
+var
+  Form1: TForm1;
+
+implementation
+
+{$R *.dfm}
+
+procedure TForm1.StartServer;
+begin
+  // Set server parameters (port and bind address)
+  ipServer.port := '3434'; // Port number for server
+  ipServer.bindTo := '0.0.0.0'; // Bind to all network interfaces
+
+  // Set protocol based on selected option (TCP or UDP)
+  if RadioButton1.Checked then
+    ipServer.proto := unapt_TCP;
+
+  if RadioButton2.Checked then
+    ipServer.proto := unapt_UDP;
+
+  // Connect codec to wave output for audio playback
+  codecOut.consumer := waveOut;
+  ipServer.consumer := codecOut;
+
+  // Open wave output and codec, and activate server
+  waveOut.open();
+  codecOut.open();
+  ipServer.active := true;
+
+  // Log server status and update button states
+  Memo1.Lines.Add('Server started on port 3434');
+  Button2.Enabled := false; // Disable start button
+  Button3.Enabled := true;  // Enable stop button
+end;
+
+procedure TForm1.StopServer;
+begin
+  // Deactivate server and close audio devices
+  ipServer.active := false;
+  waveOut.close();
+  codecOut.close();
+
+  // Log server stop message and update button states
+  Memo1.Lines.Add('Server stopped');
+  Button2.Enabled := true;  // Enable start button
+  Button3.Enabled := false; // Disable stop button
+end;
+
+procedure TForm1.Button1Click(Sender: TObject);
+begin
+  // Send message to connected client and display in Memo2
+  Memo2.Lines.Add('You Said: ' + Edit1.Text);
+  ipServer.sendText(0, 'Server Says: ' + Edit1.Text);
+  Edit1.Clear;  // Clear input field
+  Edit1.SetFocus; // Focus back to input field
+end;
+
+procedure TForm1.Button2Click(Sender: TObject);
+begin
+  // Start server if it is not active
+  if not ipServer.active then
+    StartServer;
+  ComboBox1.Enabled := false; // Disable output device selection
+end;
+
+procedure TForm1.Button3Click(Sender: TObject);
+begin
+  // If client is connected, send ENDCALL message to end call
+  if ipServer.clientCount > 0 then
+  begin
+    ipServer.sendText(0, 'ENDCALL');
+    Memo1.Lines.Add('ENDCALL command sent to client');
+  end;
+
+  StopServer; // Stop server
+  ComboBox1.Enabled := true; // Re-enable output device selection
+end;
+
+procedure TForm1.ComboBox1Change(Sender: TObject);
+begin
+  // Change the output device based on ComboBox selection
+  waveOut.deviceId := ComboBox1.ItemIndex;
+end;
+
+procedure TForm1.FormClose(Sender: TObject; var Action: TCloseAction);
+begin
+  // Check if a client is connected and send ENDCALL message if needed
+  if ipServer.clientCount > 0 then
+  begin
+    ipServer.sendText(0, 'ENDCALL');
+    Memo1.Lines.Add('ENDCALL command sent to client');
+  end;
+
+  // Stop server if active
+  if ipServer.active then
+    StopServer;
+end;
+
+procedure TForm1.FormCreate(Sender: TObject);
+begin
+  Memo1.Clear;
+  Memo1.Lines.Add('Application started');
+
+  // Enumerate available output devices and populate ComboBox
+  ComboBox1.Items.Clear;
+  enumWaveDevices(ComboBox1, false);
+
+  // Set first device as default if available
+  if ComboBox1.Items.Count > 0 then
+    ComboBox1.ItemIndex := 0;
+end;
+
+procedure TForm1.ipServerServerClientDisconnect(Sender: TObject;
+  connId: tConID; connected: bool);
+begin
+  // Log client disconnection and clear remote IP/port info
+  Memo1.Lines.Add('Client Disconnected From IP: ' + RemoteIP);
+  RemoteIP := '';
+  RemotePort := '';
+  Label3.Caption := 'Not In Call'; // Update call status label
+
+  //disable and clear chat controls...
+  self.Button1.Enabled:=false;
+  self.Edit1.Enabled:=false;
+  self.Memo2.Clear;
+end;
+
+procedure TForm1.ipServerServerNewClient(Sender: TObject;
+  connId: tConID; connected: bool);
+begin
+  // Get and log client's IP and port information
+  ipServer.getHostInfo(RemoteIP, RemotePort, connId);
+  Memo1.Lines.Add('New Client Connected From IP: ' + RemoteIP);
+  Label3.Caption := 'In Call!'; // Update call status label
+
+  //enable chat controls...
+  self.Button1.Enabled:=true;
+  self.Edit1.Enabled:=true;
+end;
+
+procedure TForm1.ipServerTextData(Sender: TObject; connId: tConID;
+  const data: string);
+begin
+  // Check for incoming message with "Client Says:" prefix and display
+  if data.Contains('Client Says:') then
+    Memo2.Lines.Add(Data);
+end;
+
+end.
+

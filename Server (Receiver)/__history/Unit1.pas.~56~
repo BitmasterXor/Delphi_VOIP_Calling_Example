@@ -1,0 +1,180 @@
+unit Unit1;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants,
+  System.Classes,
+  Vcl.Graphics, Vcl.Controls, Vcl.Forms, Vcl.Dialogs, unaVC_wave, unaVCIDE,
+  unaVC_socks, Vcl.StdCtrls, unaSockets, unaVC_pipe, unaVCIDEutils;
+
+type
+  TForm1 = class(TForm)
+    GroupBox2: TGroupBox;
+    ipServer: TunavclIPInStream;
+    codecOut: TunavclWaveCodecDevice;
+    waveOut: TunavclWaveOutDevice;
+    Button2: TButton;
+    Button3: TButton;
+    Memo1: TMemo;
+    Label3: TLabel;
+    Label1: TLabel;
+    ComboBox1: TComboBox;
+    RadioButton1: TRadioButton;
+    RadioButton2: TRadioButton;
+    GroupBox1: TGroupBox;
+    Button1: TButton;
+    Edit1: TEdit;
+    Memo2: TMemo;
+    procedure Button2Click(Sender: TObject); // Start server
+    procedure Button3Click(Sender: TObject); // Stop server
+    procedure FormCreate(Sender: TObject);
+    procedure ipServerServerNewClient(Sender: TObject; connId: tConID;
+      connected: bool);
+    procedure ipServerServerClientDisconnect(Sender: TObject; connId: tConID;
+      connected: bool);
+    procedure ComboBox1Change(Sender: TObject);
+    procedure FormClose(Sender: TObject; var Action: TCloseAction);
+    procedure Button1Click(Sender: TObject);
+  private
+    procedure StartServer; // Server starting procedure
+    procedure StopServer; // Server stopping procedure
+  public
+    RemoteIP: string;
+    RemotePort: string;
+  end;
+
+var
+  Form1: TForm1;
+
+implementation
+
+{$R *.dfm}
+
+procedure TForm1.StartServer;
+begin
+  // Setup server parameters
+  ipServer.port := '3434';
+  ipServer.bindTo := '0.0.0.0';
+  // setup VOIP socket Transportation protocol parameters (TCP or UDP)...
+  if self.RadioButton1.Checked then
+  begin
+    self.ipServer.proto := unapt_TCP;
+  end;
+
+  if self.RadioButton2.Checked then
+  begin
+    self.ipServer.proto := unapt_UDP;
+  end;
+
+  // Link server and codec for audio streaming
+  codecOut.consumer := waveOut; // Ensure output goes to waveOut
+  ipServer.consumer := codecOut;
+
+  // Open devices and start server
+  waveOut.open();
+  codecOut.open();
+  ipServer.active := true; // Activate the server connection
+
+  Memo1.Lines.Add('Server started on port 3434'); // Log start message
+  Button2.Enabled := false; // Disable server start button
+  Button3.Enabled := true; // Enable server stop button
+end;
+
+procedure TForm1.StopServer;
+begin
+  // Stop and clean up server resources
+  ipServer.active := false;
+  waveOut.close();
+  codecOut.close();
+
+  Memo1.Lines.Add('Server stopped'); // Log stop message
+  Button2.Enabled := true; // Enable server start button
+  Button3.Enabled := false; // Disable server stop button
+end;
+
+procedure TForm1.Button1Click(Sender: TObject);
+begin
+self.Memo2.Lines.Add('You Said: ' + self.Edit1.Text);
+self.ipServer.sendText(0,'Server Says: ' + self.Edit1.Text);
+end;
+
+procedure TForm1.Button2Click(Sender: TObject);
+begin
+  if not ipServer.active then // Start server if it's not already active
+    StartServer;
+  self.ComboBox1.Enabled := false;
+  // do not allow user to change output device on the fly...
+end;
+
+procedure TForm1.Button3Click(Sender: TObject);
+begin
+  // Check if a client is connected and send ENDCALL command
+  if ipServer.clientCount > 0 then
+  begin
+    ipServer.sendText(0, 'ENDCALL');
+    Memo1.Lines.Add('ENDCALL command sent to client'); // Log ENDCALL message
+  end;
+
+  StopServer; // Stop server when button is clicked
+  self.ComboBox1.Enabled := true;
+  // Allow user to change output device if they wish...
+end;
+
+procedure TForm1.ComboBox1Change(Sender: TObject);
+begin
+  // setup output to what user has chosen on GUI front end...
+  self.waveOut.deviceId := self.ComboBox1.ItemIndex;
+end;
+
+procedure TForm1.FormClose(Sender: TObject; var Action: TCloseAction);
+begin
+  // Check if a client is connected and send ENDCALL command
+  if ipServer.clientCount > 0 then
+  begin
+    ipServer.sendText(0, 'ENDCALL');
+    Memo1.Lines.Add('ENDCALL command sent to client'); // Log ENDCALL message
+  end;
+
+  if self.ipServer.active = true then
+  begin
+    StopServer; // Stop server when button is clicked
+    self.ComboBox1.Enabled := true;
+    // Allow user to change output device if they wish...
+  end;
+end;
+
+procedure TForm1.FormCreate(Sender: TObject);
+var
+  i: Integer;
+begin
+  Memo1.Clear;
+  Memo1.Lines.Add('Application started'); // Log initial message
+
+  // Loop through all available output devices and add their names to ComboBox
+  ComboBox1.Items.Clear;
+
+  enumWaveDevices(ComboBox1, false);
+
+  if ComboBox1.Items.Count > 0 then
+    ComboBox1.ItemIndex := 0; // Set the first device as the default selection
+end;
+
+procedure TForm1.ipServerServerClientDisconnect(Sender: TObject; connId: tConID;
+  connected: bool);
+begin
+  self.Memo1.Lines.Add('Client Disconnected From IP: ' + RemoteIP);
+  RemoteIP := '';
+  RemotePort := '';
+  self.Label3.Caption := 'Not In Call';
+end;
+
+procedure TForm1.ipServerServerNewClient(Sender: TObject; connId: tConID;
+  connected: bool);
+begin
+  self.ipServer.getHostInfo(RemoteIP, RemotePort, connId);
+  self.Memo1.Lines.Add('New Client Connected From IP: ' + RemoteIP);
+  self.Label3.Caption := 'In Call!';
+end;
+
+end.
