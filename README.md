@@ -1,6 +1,6 @@
 <h1>Delphi VOIP and Chat Applications</h1>
 
-<p>This repository contains two Delphi VCL projects designed for VOIP communication and real-time text chat using TCP/UDP. Utilizing <code>unavcl</code> components, these applications facilitate audio streaming and messaging for a single-client server connection.</p>
+<p>This repository contains two Delphi VCL projects designed for VOIP communication and real-time text chat using the <strong>VC (Voice Chat) components</strong> by LakeOfSoft. These applications facilitate audio streaming and messaging for a single-client server connection.</p>
 
 <!-- Add a screenshot or preview image of the applications -->
 <p align="center">
@@ -24,7 +24,7 @@
 
 <h2>Installation</h2>
 <ol>
-  <li><strong>Requirements:</strong> Delphi with <a href="https://lakeofsoft.com/vc/aindex.html" target="_blank">unavcl components</a> for audio and socket operations.</li>
+  <li><strong>Requirements:</strong> Delphi with <a href="https://lakeofsoft.com/vc/aindex.html" target="_blank">VC (Voice Chat) components</a> for audio and socket operations.</li>
   <li><strong>Download and Open Project:</strong> Clone this repository and open the `.dpr` files in Delphi for each project.</li>
   <li><strong>Compile:</strong> Build both projects to generate the executables for the client and server.</li>
   <li><strong>Run:</strong> Start the server application first, followed by the client.</li>
