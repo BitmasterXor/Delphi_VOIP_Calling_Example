@@ -1,6 +1,11 @@
 <h1>Delphi VOIP and Chat Applications</h1>
 
-<p>This repository contains two Delphi VCL projects designed for VOIP communication and real-time text chat using the <strong>VC (Voice Chat) components</strong> by LakeOfSoft. These applications facilitate audio streaming and messaging for a single-client server connection.</p>
+<p>This repository contains two Delphi VCL projects designed for VOIP communication and real-time text chat using the <strong>VC (Voice Chat) components</strong> by LakeOfSoft. These components are included in this repository for your convenience, available in two versions:</p>
+<ul>
+  <li><strong>Version for Delphi 4 to Delphi XE3:</strong> This version is compatible with older Delphi environments.</li>
+  <li><strong>Version for Delphi 12.2 Athens:</strong> A partially re-written and fixed version to ensure compatibility with the latest Delphi release.</li>
+</ul>
+<p>These applications facilitate audio streaming and messaging for a single-client server connection.</p>
 
 <!-- Add a screenshot or preview image of the applications -->
 <p align="center">
@@ -24,7 +29,7 @@
 
 <h2>Installation</h2>
 <ol>
-  <li><strong>Requirements:</strong> Delphi with <a href="https://lakeofsoft.com/vc/aindex.html" target="_blank">VC (Voice Chat) components</a> for audio and socket operations.</li>
+  <li><strong>Requirements:</strong> Delphi with the VC (Voice Chat) components included in this repository, located in the <code>VC Audio Components For Delphi</code> folder, for audio and socket operations.</li>
   <li><strong>Download and Open Project:</strong> Clone this repository and open the `.dpr` files in Delphi for each project.</li>
   <li><strong>Compile:</strong> Build both projects to generate the executables for the client and server.</li>
   <li><strong>Run:</strong> Start the server application first, followed by the client.</li>
