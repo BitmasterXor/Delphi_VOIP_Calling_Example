@@ -15,12 +15,12 @@
 <h2><span style="font-size: 20px; margin-right: 10px;">📋</span>Projects Overview</h2>
 <ul>
   <li><strong>VOIP Server Project:</strong> Handles a single client connection for audio streaming and basic text chat functionality.</li>
-  <li><strong>VOIP Client Project:</strong> Connects to the server, allowing two-way audio streaming and text-based chat with the server.</li>
+  <li><strong>VOIP Client Project:</strong> Connects to the server, allowing audio streaming from the client's microphone to the server and basic text-based chat.</li>
 </ul>
 
 <h2><span style="font-size: 20px; margin-right: 10px;">✨</span>Features</h2>
 <ul>
-  <li><strong>Audio Streaming:</strong> Full-duplex audio streaming between server and client using user-selectable audio devices.</li>
+  <li><strong>Audio Streaming:</strong> The client sends microphone audio to the server, which plays the audio through the user's preferred output device in Microsoft Windows.</li>
   <li><strong>Real-Time Text Chat:</strong> Allows for messaging between the client and server in real-time.</li>
   <li><strong>Protocol Flexibility:</strong> Supports both TCP and UDP communication modes.</li>
   <li><strong>Single Client Connection:</strong> Server accepts only one client connection at a time for focused communication.</li>
