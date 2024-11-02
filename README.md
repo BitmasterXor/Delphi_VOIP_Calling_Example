@@ -1,4 +1,14 @@
-<h1>Delphi VOIP and Chat Applications</h1>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <title>Delphi VOIP and Chat Applications</title>
+</head>
+<body>
+
+<h1><i class="fas fa-phone-volume"></i> Delphi VOIP and Chat Applications</h1>
 
 <p>This repository contains two Delphi VCL projects designed for VOIP communication and real-time text chat using the <strong>VC (Voice Chat) components</strong> by LakeOfSoft. These components are included in this repository for your convenience, available in two versions:</p>
 <ul>
@@ -12,13 +22,13 @@
   <img src="Preview.png" alt="Screenshot of Delphi VOIP and Chat Applications" style="max-width:100%; height:auto;">
 </p>
 
-<h2>Projects Overview</h2>
+<h2><i class="fas fa-folder-open"></i> Projects Overview</h2>
 <ul>
   <li><strong>VOIP Server Project:</strong> Handles a single client connection for audio streaming and basic text chat functionality.</li>
   <li><strong>VOIP Client Project:</strong> Connects to the server, allowing two-way audio streaming and text-based chat with the server.</li>
 </ul>
 
-<h2>Features</h2>
+<h2><i class="fas fa-star"></i> Features</h2>
 <ul>
   <li><strong>Audio Streaming:</strong> Full-duplex audio streaming between server and client using user-selectable audio devices.</li>
   <li><strong>Real-Time Text Chat:</strong> Allows for messaging between the client and server in real-time.</li>
@@ -27,7 +37,7 @@
   <li><strong>Configurable Bitrate:</strong> By default, the components are set to their standard PCM bitrate. Users can easily add code to modify the bitrate as needed to suit different audio quality requirements.</li>
 </ul>
 
-<h2>Installation</h2>
+<h2><i class="fas fa-cogs"></i> Installation</h2>
 <ol>
   <li><strong>Requirements:</strong> Delphi with the VC (Voice Chat) components included in this repository, located in the <code>VC Audio Components For Delphi</code> folder, for audio and socket operations.</li>
   <li><strong>Download and Open Project:</strong> Clone this repository and open the `.dpr` files in Delphi for each project.</li>
@@ -35,7 +45,7 @@
   <li><strong>Run:</strong> Start the server application first, followed by the client.</li>
 </ol>
 
-<h2>Usage</h2>
+<h2><i class="fas fa-play"></i> Usage</h2>
 <ol>
   <li><strong>Server Setup:</strong> Enter a port and start the server to listen for an incoming connection.</li>
   <li><strong>Client Connection:</strong> Enter the server's IP address and port on the client, select TCP or UDP, and connect.</li>
@@ -44,13 +54,16 @@
   <li><strong>Disconnection:</strong> Click the disconnect button on the client to end the connection gracefully.</li>
 </ol>
 
-<h2>Contributing</h2>
+<h2><i class="fas fa-users"></i> Contributing</h2>
 <p>Contributions are welcome! Please fork this repository, make your changes, and submit a pull request with any bug fixes or enhancements.</p>
 
-<h2>License</h2>
+<h2><i class="fas fa-file-alt"></i> License</h2>
 <p>This project is open source and provided "as is" without warranty. Use at your own risk.</p>
 
-<h2>📧 Contact</h2>
+<h2><i class="fas fa-envelope"></i> 📧 Contact</h2>
 <p>Discord: bitmasterxor</p>
 
 <p align="center">Made with ❤️ by BitmasterXor, using Delphi RAD Studio</p>
+
+</body>
+</html>
