@@ -27,6 +27,15 @@
   <li><strong>Configurable Bitrate:</strong> By default, the components are set to their standard PCM bitrate. Users can easily add code to modify the bitrate as needed to suit different audio quality requirements.</li>
 </ul>
 
+<h2><span style="font-size: 20px; margin-right: 10px;">🔄</span>Full Duplex Capability</h2>
+<p>While the current setup facilitates unidirectional audio streaming—where the client sends audio to the server—users can easily modify the application to create a full-duplex solution. This means both the client and server can simultaneously send and receive audio.</p>
+<ul>
+  <li><strong>Client Modifications:</strong> Update the client to handle audio input and output. By integrating the audio streaming logic for both sending and receiving, you can allow the client to capture audio from the microphone and play audio received from the server.</li>
+  <li><strong>Server Modifications:</strong> The server will need to support multiple streams—receiving audio from the client while sending audio back. By implementing a two-way communication channel, the server can relay audio packets back to the client.</li>
+  <li><strong>Synchronization:</strong> Ensure proper synchronization of audio streams to prevent echo and latency issues, possibly using audio buffering techniques.</li>
+</ul>
+<p>By implementing these modifications, users can transform the current application into a robust full-duplex VOIP solution.</p>
+
 <h2><span style="font-size: 20px; margin-right: 10px;">⚙️</span>Installation</h2>
 <ol>
   <li><strong>Requirements:</strong> Delphi with the VC (Voice Chat) components included in this repository, located in the <code>VC Audio Components For Delphi</code> folder, for audio and socket operations.</li>
