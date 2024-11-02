@@ -3,9 +3,10 @@ object Form1: TForm1
   Top = 0
   BorderIcons = [biSystemMenu, biMinimize]
   Caption = 'VOIP IP Calling Delphi Demo (Server) By: BitmasterXor'
-  ClientHeight = 500
+  ClientHeight = 497
   ClientWidth = 386
   Color = clBtnFace
+  Constraints.MaxHeight = 536
   Constraints.MaxWidth = 402
   Constraints.MinHeight = 536
   Constraints.MinWidth = 402
