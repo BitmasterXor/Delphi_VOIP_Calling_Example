@@ -75,7 +75,7 @@ begin
 
   // Set up audio streaming by linking codec and client
   codecIn.consumer := ipClient;
-  //ipClient.consumer := CodecOut; //NOT NEEDED! Leaving here for FULL DUPLEX future updates!
+  ipClient.consumer := CodecOut;
   // Open the audio input for recording
   codecIn.open();
   waveIn.open();

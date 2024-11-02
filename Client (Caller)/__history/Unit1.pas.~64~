@@ -23,7 +23,8 @@ type
     Memo1: TMemo; // Log for connection status
     Memo2: TMemo; // Chat display area
     GroupBox1: TGroupBox;
-    Button3: TButton; // Send message button
+    Button3: TButton;
+    codecOut: TunavclWaveCodecDevice; // Send message button
     procedure Button1Click(Sender: TObject); // Start connection
     procedure ipClientClientDisconnect(Sender: TObject; connId: tConID;
       connected: bool); // Handle disconnection
@@ -75,7 +76,7 @@ begin
 
   // Set up audio streaming by linking codec and client
   codecIn.consumer := ipClient;
-  //ipClient.consumer := CodecOut; //NOT NEEDED! Leaving here for FULL DUPLEX future updates!
+  ipClient.consumer := CodecOut;
   // Open the audio input for recording
   codecIn.open();
   waveIn.open();

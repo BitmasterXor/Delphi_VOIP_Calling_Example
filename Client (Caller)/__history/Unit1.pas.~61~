@@ -13,7 +13,9 @@ type
     waveIn: TunavclWaveInDevice; // Audio input device (microphone)
     codecIn: TunavclWaveCodecDevice; // Audio codec for encoding/decoding
     ipClient: TunavclIPOutStream; // IP client stream for VOIP
-    Button1: TButton; // Codec for audio output
+    Button1: TButton; // Button to start connection
+    WaveOut: TunavclWaveOutDevice; // Audio output device (speakers)
+    CodecOut: TunavclWaveCodecDevice; // Codec for audio output
     Button2: TButton; // Button to stop connection
     Label1, Label2, Label3, Label4: TLabel; // UI labels
     SpinEdit1: TSpinEdit; // For entering the port number
@@ -52,6 +54,8 @@ implementation
 procedure GracefullyShutdownClient;
 begin
   Form1.waveIn.close(); // Close microphone input
+  Form1.WaveOut.close(); // Close speaker output
+  Form1.CodecOut.close(); // Close codec
   Form1.Button1.Enabled := true; // Enable connect button
   Form1.Button2.Enabled := false; // Disable disconnect button
   Form1.ipClient.active := false; // Deactivate client stream
@@ -75,7 +79,7 @@ begin
 
   // Set up audio streaming by linking codec and client
   codecIn.consumer := ipClient;
-  //ipClient.consumer := CodecOut; //NOT NEEDED! Leaving here for FULL DUPLEX future updates!
+  ipClient.consumer := CodecOut;
   // Open the audio input for recording
   codecIn.open();
   waveIn.open();

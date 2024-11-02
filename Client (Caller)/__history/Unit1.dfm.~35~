@@ -363,4 +363,18 @@ object Form1: TForm1
     Left = 192
     Top = 35
   end
+  object WaveOut: TunavclWaveOutDevice
+    consumer = CodecOut
+    deviceId = -1
+    playbackOptions = [unapo_smoothStartup, unapo_jitterRepeat]
+    Left = 184
+    Top = 88
+  end
+  object CodecOut: TunavclWaveCodecDevice
+    consumer = ipClient
+    calcVolume = True
+    silenceDetectionMode = unasdm_VC
+    Left = 112
+    Top = 88
+  end
 end
